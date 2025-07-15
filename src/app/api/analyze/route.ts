@@ -3,7 +3,9 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
   try {
-    const { chatId, userId } = await request.json()
+    const { chatId } = await request.json()
+    const userId = await request.cookies.get('user_id')
+
     if (!chatId || !userId) {
       return NextResponse.json(
         { message: '알 수 없는 오류입니다. 다시 시도해주십시오.' },

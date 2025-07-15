@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 export async function POST(request: NextRequest) {
   try {
     const { chatId } = await request.json()
-    const userId = await request.cookies.get('user_id')
+    const userId = request.cookies.get('user_id')?.value
 
     if (!chatId || !userId) {
       return NextResponse.json(
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     const { data, error } = await supabase
       .from('chat')
       .select('*')
-      .eq('chat_id', chatId)
+      .eq('id', chatId)
       .eq('user_id', userId)
       .single()
 

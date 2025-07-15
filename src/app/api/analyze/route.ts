@@ -17,6 +17,7 @@ export async function POST(request: NextRequest) {
     const chatData = await chatService.getChatForAnalysis(chatId, userId)
     const chatHistory = chatData.chat_history
 
+    console.log(chatData)
     if (!chatHistory) {
       return NextResponse.json(
         { message: '채팅 히스토리를 찾을 수 없습니다.' },

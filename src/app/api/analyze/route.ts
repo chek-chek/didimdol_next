@@ -1,5 +1,5 @@
-import { createClient } from '@/libs/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
+import { chatService } from '@/services/chat.service'
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,23 +13,14 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const supabase = await createClient()
+    // 분석용 채팅 데이터 가져오기
+    const chatData = await chatService.getChatForAnalysis(chatId, userId)
+    const chatHistory = chatData.chat_history
 
-    // 1, chat 에 들어있는 내역 확인하기
-    const { data, error } = await supabase
-      .from('chat')
-      .select('*')
-      .eq('id', chatId)
-      .eq('user_id', userId)
-      .single()
-
-    const chat_history = data.chat_history
-
-    // chat history 가 없거나, 가져올 때 error가 있었다면
-    if (!chat_history || error) {
+    if (!chatHistory) {
       return NextResponse.json(
-        { message: '알 수 없는 오류입니다. 다시 시도해주십시오.' },
-        { status: 500 }
+        { message: '채팅 히스토리를 찾을 수 없습니다.' },
+        { status: 404 }
       )
     }
 
@@ -43,8 +34,11 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     return NextResponse.json(
       {
-        message: '분석 중 에러입니다. 다시 시도해주십시오.',
-        error,
+        message:
+          error instanceof Error
+            ? error.message
+            : '분석 중 에러입니다. 다시 시도해주십시오.',
+        error: error instanceof Error ? error.message : '알 수 없는 오류',
       },
       { status: 500 }
     )

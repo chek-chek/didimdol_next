@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import '@krds-ui/core/dist/style.css'
 
 export const metadata: Metadata = {
   title: 'Create Next App',

@@ -4,14 +4,12 @@
 import { POST } from '@/app/api/auth/signin/route'
 import { authService } from '@/services/auth.service'
 
-// 👇 authService 모킹
 jest.mock('@/services/auth.service', () => ({
   authService: {
     signIn: jest.fn(),
   },
 }))
 
-// NextRequest 스텁
 const buildRequest = ({
   email,
   password,

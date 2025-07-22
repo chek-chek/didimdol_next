@@ -12,6 +12,7 @@
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
+    "@google-cloud/text-to-speech": "^6.2.0",
     "@hookform/resolvers": "^5.1.1",
     "@krds-ui/core": "^0.6.0",
     "@krds-ui/tailwindcss-plugin": "^0.6.0",

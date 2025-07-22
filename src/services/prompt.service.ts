@@ -1,5 +1,5 @@
 // services/prompt.service.ts
-import { createClient } from '@/libs/supabase/server'
+import { createClient } from '@/lib/supabase/server'
 
 export interface Prompt {
   id: string

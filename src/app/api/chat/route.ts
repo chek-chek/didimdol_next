@@ -29,6 +29,7 @@ export async function POST(request: NextRequest) {
       // 처음하는 발화이면
       // 여기서 에이전트를 통해서 발화 생성.
       // answer = makeAnswer(message)
+
       answer = 'first text'
 
       // 새로운 채팅 생성
@@ -37,7 +38,6 @@ export async function POST(request: NextRequest) {
         userMessage: message,
         assistantMessage: answer,
       })
-
       finalChatId = result.chatId
     } else {
       // 처음하는 발화가 아니면 히스토리를 토대로 생성

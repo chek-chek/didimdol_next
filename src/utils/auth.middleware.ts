@@ -87,7 +87,7 @@ export async function setSupabaseSession(request: NextRequest) {
   }
 
   try {
-    const supabase = await import('@/libs/supabase/server').then((m) =>
+    const supabase = await import('@/lib/supabase/server').then((m) =>
       m.createClient()
     )
 

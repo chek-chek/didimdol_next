@@ -59,6 +59,7 @@ export class ChatService {
     const { data, error } = await supabase
       .from('chat')
       .insert({
+        chat_title: userMessage,
         user_id: userId,
         chat_history: initialChatHistory,
       })
@@ -74,7 +75,47 @@ export class ChatService {
       chatHistory: initialChatHistory,
     }
   }
+  /**
+   * 특정 사용자의 모든 채팅 내역 가져오기
+   */
+  async getChatsByUserId(userId: string) {
+    const supabase = await this.getSupabaseClient()
 
+    const { data, error } = await supabase
+      .from('chat')
+      .select(
+        'id, created_at, updated_at, chat_title, chat_history, isAnalyzed'
+      )
+      .eq('user_id', userId)
+      .order('updated_at', { ascending: false })
+
+    if (error) {
+      throw new Error(`채팅 목록 조회 중 오류가 발생했습니다: ${error.message}`)
+    }
+
+    return data
+  }
+
+  /**
+   * 분석 상태 변경
+   */
+  async updateIsAnalyzed(chatId: string) {
+    const supabase = await this.getSupabaseClient()
+
+    const { data, error } = await supabase
+      .from('chat')
+      .update({
+        isAnalyzed: true,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', chatId)
+
+    if (error) {
+      throw new Error(`분석 상태 변경 중 오류: ${error.message}`)
+    }
+
+    return data
+  }
   /**
    * 기존 채팅 히스토리를 가져옴
    */

@@ -1,5 +1,7 @@
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 import { AppSidebar } from '@/components/layout/app-sidebar'
+import { User } from 'lucide-react'
+import UserButton from '@/components/layout/UserButton'
 
 export default function RootLayout({
   children,
@@ -14,6 +16,7 @@ export default function RootLayout({
           <SidebarTrigger />
         </div>
         <div className="px-4 py-4 lg:px-8 h-full">{children}</div>
+        <UserButton />
       </main>
     </SidebarProvider>
   )

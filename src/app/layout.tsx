@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import '@krds-ui/core/dist/style.css'
+import AuthListener from '@/utils/authListener'
+import { Toaster } from 'sonner'
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -12,8 +14,12 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body className={`antialiased`}>{children}</body>
-    </html>
+    <>
+      <html lang="en">
+        <AuthListener />
+        <body className={`antialiased`}>{children}</body>
+      </html>
+      <Toaster richColors position="top-right" />
+    </>
   )
 }

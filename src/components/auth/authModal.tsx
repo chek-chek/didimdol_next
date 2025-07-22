@@ -3,9 +3,12 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { useAuthStore } from '@/store/useAuthStore'
 
 export default function LoginModal({ onClose }: { onClose: () => void }) {
   const router = useRouter()
+  const login = useAuthStore((state) => state.login)
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -29,19 +32,19 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
       return
     }
 
-    router.push('/admin')
+    login() // zustand 상태 변경
+    onClose() // 모달 닫기
+    router.push('/admin') // 페이지 이동
   }
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
       <div className="bg-white rounded-2xl shadow-lg w-[360px] p-6 relative">
-        {/* 로고 */}
         <div className="flex flex-col items-center mb-6">
           <Image src="/logo.svg" alt="로고" width={120} height={60} />
           <h2 className="text-lg font-semibold mt-2">로그인</h2>
         </div>
 
-        {/* 입력 필드 */}
         <div className="space-y-3">
           <input
             type="email"
@@ -60,7 +63,6 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
           {error && <p className="text-red-500 text-sm">{error}</p>}
         </div>
 
-        {/* 버튼 */}
         <div className="mt-5 space-y-3">
           <button
             className="w-full bg-sky-500 text-white py-2 rounded-lg text-sm hover:bg-sky-600"
@@ -78,12 +80,10 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
           </button>
         </div>
 
-        {/* 하단 텍스트 */}
         <div className="mt-4 text-center text-gray-500 text-xs">
           비밀번호 재설정
         </div>
 
-        {/* 닫기 버튼 */}
         <button
           className="absolute top-3 right-4 text-gray-500 hover:text-black"
           onClick={onClose}

@@ -70,3 +70,47 @@ export async function POST(request: NextRequest) {
     )
   }
 }
+
+export async function GET(request: NextRequest) {
+  try {
+    const userId = request.cookies.get('user_id')?.value
+
+    if (!userId) {
+      return NextResponse.json(
+        { message: '인증 정보가 없습니다.' },
+        { status: 401 }
+      )
+    }
+
+    // 채팅 내역 조회 (user_id 기준)
+    const chats = await chatService.getChatsByUserId(userId)
+
+    // chat_title이 없을 경우 기본 제목 지정
+    const formattedChats = chats.map((chat: any) => ({
+      chatId: chat.id,
+      createdAt: chat.created_at,
+      updatedAt: chat.updated_at,
+      firstChat: chat.chat_history[0].content,
+      title:
+        chat.chat_title ??
+        `${new Date(chat.created_at).toLocaleString('ko-KR')}`,
+      isAnalyzed: chat.isAnalyzed,
+    }))
+
+    return NextResponse.json({
+      message: '채팅 내역 조회 성공',
+      chats: formattedChats,
+    })
+  } catch (error) {
+    return NextResponse.json(
+      {
+        message:
+          error instanceof Error
+            ? error.message
+            : '채팅 내역 조회 중 오류가 발생했습니다.',
+        error: error instanceof Error ? error.message : '알 수 없는 오류',
+      },
+      { status: 500 }
+    )
+  }
+}

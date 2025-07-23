@@ -3,6 +3,7 @@ import './globals.css'
 import '@krds-ui/core/dist/style.css'
 import AuthListener from '@/utils/authListener'
 import { Toaster } from 'sonner'
+import QueryProvider from '@/components/QueryProvider'
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -16,8 +17,10 @@ export default function RootLayout({
   return (
     <>
       <html lang="en">
-        <AuthListener />
-        <body className={`antialiased`}>{children}</body>
+        <QueryProvider>
+          <AuthListener />
+          <body className={`antialiased`}>{children}</body>
+        </QueryProvider>
       </html>
       <Toaster richColors position="top-right" />
     </>

@@ -1,12 +1,15 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { chatService } from '@/services/chat.service'
 
 export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  contextPromise: Promise<{ params: { id: string } }>
 ) {
+  const { params } = await contextPromise
   const chatId = params.id
-  const userId = req.headers.get('x-user-id') // 클라이언트에서 보내주는 userId
+  const userId = request.cookies.get('user_id')?.value
+
+  console.log(chatId, userId)
 
   if (!userId) {
     return NextResponse.json({ error: 'userId 누락됨' }, { status: 400 })
@@ -14,6 +17,7 @@ export async function GET(
 
   try {
     const chat = await chatService.getChatForAnalysis(chatId, userId)
+
     return NextResponse.json(chat)
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 })

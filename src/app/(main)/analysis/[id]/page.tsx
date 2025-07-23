@@ -5,7 +5,7 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-import type { ChatMessage } from '@/services/chat.service'
+import { useChatHistory } from '@/hooks/useChatHistory'
 
 interface AnalysisDetailPageProps {
   params: Promise<{ id: string }>
@@ -15,9 +15,12 @@ export default function AnalysisDetailPage({
   params,
 }: AnalysisDetailPageProps) {
   const { id: chatId } = use(params)
-  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([])
+  const { chatHistory, handleMutateChatHistory, isGetChatHistoryPending } =
+    useChatHistory()
+  useEffect(() => {
+    handleMutateChatHistory(chatId)
+  }, [])
   const [analysis, setAnalysis] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
 
   const userId =
     typeof window !== 'undefined' ? localStorage.getItem('user_id') ?? '' : ''
@@ -25,14 +28,6 @@ export default function AnalysisDetailPage({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const chatRes = await fetch(`/api/chat/${chatId}`, {
-          headers: { 'x-user-id': userId },
-        })
-        const chatData = await chatRes.json()
-        if (chatData?.chat_history) {
-          setChatHistory(chatData.chat_history)
-        }
-
         const analysisRes = await fetch(`/api/analyze/${chatId}`)
         const analysisData = await analysisRes.json()
         if (analysisData?.content) {
@@ -47,9 +42,6 @@ export default function AnalysisDetailPage({
   }, [chatId, userId])
 
   const handleAnalyze = async () => {
-    if (!userId) return
-    setLoading(true)
-
     try {
       const conversation = chatHistory
         .map(
@@ -69,15 +61,13 @@ export default function AnalysisDetailPage({
       const data = await res.json()
 
       if (res.ok) {
-        setAnalysis(data.content)
+        setAnalysis(data.analyzed_data)
         toast.success('분석 완료')
       } else {
         throw new Error(data.error || '분석 실패')
       }
     } catch (error: any) {
       toast.error('오류 발생' + error.message)
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -103,12 +93,12 @@ export default function AnalysisDetailPage({
         </CardContent>
       </Card>
 
-      <Button
-        onClick={handleAnalyze}
-        disabled={loading || !!analysis}
-        className="mb-6"
-      >
-        {loading ? '분석 중...' : analysis ? '분석 완료됨' : '이 대화 분석하기'}
+      <Button onClick={handleAnalyze} disabled={!!analysis} className="mb-6">
+        {isGetChatHistoryPending
+          ? '분석 중...'
+          : analysis
+          ? '분석 완료됨'
+          : '이 대화 분석하기'}
       </Button>
 
       {analysis && (

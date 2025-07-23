@@ -6,7 +6,6 @@ export async function POST(request: NextRequest) {
   try {
     const { chatId } = await request.json()
     const userId = request.cookies.get('user_id')?.value
-
     if (!chatId || !userId) {
       return NextResponse.json(
         { message: '알 수 없는 오류입니다. 다시 시도해주십시오.' },
@@ -14,7 +13,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // 분석용 채팅 데이터 가져오기
     const chatData = await chatService.getChatForAnalysis(chatId, userId)
     const chatHistory = chatData.chat_history
 
@@ -27,12 +25,12 @@ export async function POST(request: NextRequest) {
 
     // 여기 이제 agent 통해서 분석하기
     const analyzed_data = '대충 분석된 데이터.'
-
     await createAnalyze({
       chat_id: chatId,
       user_id: userId,
       content: analyzed_data,
     })
+
     chatService.updateIsAnalyzed(chatId)
 
     return NextResponse.json({

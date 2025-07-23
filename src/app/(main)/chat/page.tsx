@@ -70,29 +70,40 @@ export default function ChatPage() {
     <div className="flex flex-col h-full p-4">
       <Card className="flex-1 overflow-hidden">
         <CardContent className="p-4 h-full">
-          <ScrollArea className="h-full pr-4">
-            <div className="flex flex-col gap-4">
-              {messages.map((msg, idx) => (
-                <div
-                  key={idx}
-                  className={`rounded-lg p-3 max-w-[75%] ${
-                    msg.role === 'user'
-                      ? 'self-end bg-blue-10'
-                      : 'self-start bg-gray-10'
-                  }`}
-                >
-                  {msg.content}
-                </div>
-              ))}
-              {loading && (
-                <div className="self-start text-gray-500 text-sm">
-                  Typing...
-                </div>
-              )}
+          {messages.length === 0 && !loading ? (
+            /* ========== 처음 진입 화면 ========== */
+            <div className="flex h-full items-center justify-center">
+              <p className="text-2xl text-gray-400 select-none">
+                채팅을 시작하세요 ✨
+              </p>
             </div>
-          </ScrollArea>
+          ) : (
+            /* ========== 채팅 스크롤 영역 ========== */
+            <ScrollArea className="h-full pr-4">
+              <div className="flex flex-col gap-4">
+                {messages.map((msg, idx) => (
+                  <div
+                    key={idx}
+                    className={`rounded-lg p-3 max-w-[75%] ${
+                      msg.role === 'user'
+                        ? 'self-end bg-blue-10'
+                        : 'self-start bg-gray-10'
+                    }`}
+                  >
+                    {msg.content}
+                  </div>
+                ))}
+                {loading && (
+                  <div className="self-start text-gray-500 text-sm">
+                    Typing...
+                  </div>
+                )}
+              </div>
+            </ScrollArea>
+          )}
         </CardContent>
       </Card>
+
       <div className="mt-4 flex items-center gap-2">
         <Input
           placeholder="메시지를 입력하세요..."

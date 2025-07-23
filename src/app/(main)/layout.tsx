@@ -1,6 +1,5 @@
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 import { AppSidebar } from '@/components/layout/app-sidebar'
-import { User } from 'lucide-react'
 import UserButton from '@/components/layout/UserButton'
 
 export default function RootLayout({

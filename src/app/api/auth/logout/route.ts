@@ -1,3 +1,5 @@
+// api/auth/logout/route.ts
+
 import { NextRequest, NextResponse } from 'next/server'
 import { authService } from '@/services/auth.service'
 

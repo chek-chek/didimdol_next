@@ -4,13 +4,13 @@ import { User } from 'lucide-react'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/store/useAuthStore'
-import LoginModal from '../auth/authModal'
+import AuthModal from '../auth/authModal' // ← 바뀐 모달 이름 주의!
 
 export default function UserButton() {
   const [isOpen, setIsOpen] = useState(false)
   const [showDropdown, setShowDropdown] = useState(false)
-  const isLoggedIn = useAuthStore((state) => state.isLoggedIn)
-  const logout = useAuthStore((state) => state.logout)
+  const isLoggedIn = useAuthStore((s) => s.isLoggedIn)
+  const logout = useAuthStore((s) => s.logout)
   const router = useRouter()
 
   const handleIconClick = () => {
@@ -21,9 +21,10 @@ export default function UserButton() {
     }
   }
 
-  const handleLogout = () => {
-    logout()
+  const handleLogout = async () => {
+    await logout()
     setShowDropdown(false)
+    router.refresh() // 쿠키 삭제 후 CSR·SSR 모두 최신 상태로
   }
 
   const handleGoToMypage = () => {
@@ -38,7 +39,7 @@ export default function UserButton() {
           onClick={handleIconClick}
           className="p-1.5 rounded-4 cursor-pointer bg-white border border-gray-20"
         >
-          {isLoggedIn ? <User /> : <div>로그인</div>}
+          {isLoggedIn ? <User /> : <span className="text-sm">로그인</span>}
         </div>
 
         {showDropdown && (
@@ -60,7 +61,7 @@ export default function UserButton() {
       </div>
 
       {isOpen && (
-        <LoginModal
+        <AuthModal
           onClose={() => {
             setIsOpen(false)
           }}

@@ -1,3 +1,4 @@
+// app/api/auth/sinup/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { authService } from '@/services/auth.service'
 
